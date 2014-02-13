@@ -1,3 +1,8 @@
+Vertcoin-watchonly
+================================
+
+This fork of vertcoind incorporates "watch only" addresses, allowing the import of public VTC addresses without also having the private key. 
+
 Vertcoin integration/staging tree
 ================================
 
