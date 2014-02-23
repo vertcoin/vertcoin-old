@@ -3,7 +3,7 @@ Vertcoin-watchonly
 
 This fork of vertcoind incorporates "watch only" addresses, allowing the import of public VTC addresses without also having the private key. 
 
-The primary practical use for this vertcoind fork is to facilitate zerotrust vertcoin web wallet projects like [Vertpunk](github.com/dayreiner/vertpunk) and community-based services like [vtc.li](http://vtc.li). 
+The primary practical use for this vertcoind fork is to facilitate zerotrust vertcoin web wallet projects like [Vertpunk](https://github.com/dayreiner/vertpunk) and community-based services like [vtc.li](http://vtc.li). 
 
 Vertcoin integration/staging tree
 ================================
