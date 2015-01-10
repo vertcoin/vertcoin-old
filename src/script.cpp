@@ -1388,49 +1388,77 @@ public:
     bool operator()(const CScriptID &scriptID) const { return keystore->HaveCScript(scriptID); }
 };
 
-bool IsMine(const CKeyStore &keystore, const CTxDestination &dest)
+isminetype IsMine(const CKeyStore &keystore, const CTxDestination &dest)
 {
-    return boost::apply_visitor(CKeyStoreIsMineVisitor(&keystore), dest);
+    if (boost::apply_visitor(CKeyStoreIsMineVisitor(&keystore), dest))
+        return MINE_SPENDABLE;
+    if (keystore.HaveWatchOnly(dest))
+        return MINE_WATCH_ONLY;
+    return MINE_NO;
 }
 
-bool IsMine(const CKeyStore &keystore, const CScript& scriptPubKey)
+isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey)
 {
     vector<valtype> vSolutions;
     txnouttype whichType;
-    if (!Solver(scriptPubKey, whichType, vSolutions))
-        return false;
-
+    if (!Solver(scriptPubKey, whichType, vSolutions)) {
+        if (keystore.HaveWatchOnly(scriptPubKey.GetID()))
+            return MINE_WATCH_ONLY;
+        return MINE_NO;
+    }
+    
     CKeyID keyID;
     switch (whichType)
     {
-    case TX_NONSTANDARD:
-    case TX_NULL_DATA:
-        return false;
-    case TX_PUBKEY:
-        keyID = CPubKey(vSolutions[0]).GetID();
-        return keystore.HaveKey(keyID);
-    case TX_PUBKEYHASH:
-        keyID = CKeyID(uint160(vSolutions[0]));
-        return keystore.HaveKey(keyID);
-    case TX_SCRIPTHASH:
-    {
-        CScript subscript;
-        if (!keystore.GetCScript(CScriptID(uint160(vSolutions[0])), subscript))
-            return false;
-        return IsMine(keystore, subscript);
+        case TX_NONSTANDARD:
+            break;
+        case TX_NULL_DATA:
+            break;
+        case TX_PUBKEY:
+            keyID = CPubKey(vSolutions[0]).GetID();
+            if (keystore.HaveKey(keyID))
+                return MINE_SPENDABLE;
+            if (keystore.HaveWatchOnly(keyID))
+                return MINE_WATCH_ONLY;
+            break;
+        case TX_PUBKEYHASH:
+            keyID = CKeyID(uint160(vSolutions[0]));
+            if (keystore.HaveKey(keyID))
+                return MINE_SPENDABLE;
+            if (keystore.HaveWatchOnly(keyID))
+                return MINE_WATCH_ONLY;
+            break;
+        case TX_SCRIPTHASH:
+        {
+            CScriptID scriptID = CScriptID(uint160(vSolutions[0]));
+            CScript subscript;
+            if (keystore.GetCScript(scriptID, subscript)) {
+                isminetype ret = IsMine(keystore, subscript);
+                if (ret)
+                    return ret;
+            }
+            if (keystore.HaveWatchOnly(scriptID))
+                return MINE_WATCH_ONLY;
+            break;
+        }
+        case TX_MULTISIG:
+        {
+            // Only consider transactions "mine" if we own ALL the
+            // keys involved. multi-signature transactions that are
+            // partially owned (somebody else has a key that can spend
+            // them) enable spend-out-from-under-you attacks, especially
+            // in shared-wallet situations.
+            vector<valtype> keys(vSolutions.begin()+1, vSolutions.begin()+vSolutions.size()-1);
+            if (HaveKeys(keys, keystore) == keys.size())
+                return MINE_SPENDABLE;
+            break;
+        }
     }
-    case TX_MULTISIG:
-    {
-        // Only consider transactions "mine" if we own ALL the
-        // keys involved. multi-signature transactions that are
-        // partially owned (somebody else has a key that can spend
-        // them) enable spend-out-from-under-you attacks, especially
-        // in shared-wallet situations.
-        vector<valtype> keys(vSolutions.begin()+1, vSolutions.begin()+vSolutions.size()-1);
-        return HaveKeys(keys, keystore) == keys.size();
-    }
-    }
-    return false;
+
+    if (keystore.HaveWatchOnly(scriptPubKey.GetID()))
+        return MINE_WATCH_ONLY;
+    return MINE_NO;
+
 }
 
 bool ExtractDestination(const CScript& scriptPubKey, CTxDestination& addressRet)
