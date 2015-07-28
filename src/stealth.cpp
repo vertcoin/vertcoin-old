@@ -123,7 +123,20 @@ ec_secret generate_random_secret()
 bool ec_multiply(ec_point& a, const ec_secret& b)
 {
     init.init();
-    return secp256k1_ec_pubkey_tweak_mul(init.getContext(), a.data(), a.size(), b.data());
+    secp256k1_pubkey_t pubkey;
+	if(!secp256k1_ec_pubkey_create(init.getContext(), &pubkey, a.data()))
+	{
+		return false;
+	}
+    if(secp256k1_ec_pubkey_tweak_mul(init.getContext(), &pubkey, b.data()))
+	{
+		a.assign(pubkey.data, pubkey.data + 64);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 hash_digest sha256_hash(const data_chunk& chunk)
@@ -146,7 +159,20 @@ ec_secret shared_secret(const ec_secret& secret, ec_point point)
 bool ec_tweak_add(ec_point& a, const ec_secret& b)
 {
     init.init();
-    return secp256k1_ec_pubkey_tweak_add(init.getContext(), a.data(), a.size(), b.data());
+    secp256k1_pubkey_t pubkey;
+    if(!secp256k1_ec_pubkey_create(init.getContext(), &pubkey, a.data()))
+	{
+		return false;
+	}
+    if(secp256k1_ec_pubkey_tweak_add(init.getContext(), &pubkey, b.data()))
+	{	
+		a.assign(pubkey.data, pubkey.data + 64);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 ec_point secret_to_public_key(const ec_secret& secret,
@@ -156,14 +182,14 @@ ec_point secret_to_public_key(const ec_secret& secret,
     size_t size = ec_uncompressed_size;
     if (compressed)
         size = ec_compressed_size;
-
-    ec_point out(size);
-    int out_size;
-    if (!secp256k1_ec_pubkey_create(init.getContext(), out.data(), &out_size, secret.data(),
-            compressed))
+		
+	secp256k1_pubkey_t pubkey;
+    if (!secp256k1_ec_pubkey_create(init.getContext(), &pubkey, secret.data()))
         return ec_point();
-    assert(size == static_cast<size_t>(out_size));
-    return out;
+
+	std::vector<unsigned char> key;
+	key.assign(pubkey.data, pubkey.data + size);
+    return key;
 }
 
 ec_point initiate_stealth(
