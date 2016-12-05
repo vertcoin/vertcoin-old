@@ -1,10 +1,3 @@
-Copyright (c) 2009-2013 Bitcoin Developers (c) 2014-2015 Vertcoin Developers
-
-Distributed under the MIT/X11 software license, see the accompanying
-file COPYING or http://www.opensource.org/licenses/mit-license.php.
-This product includes software developed by the OpenSSL Project for use in the [OpenSSL Toolkit](http://www.openssl.org/). This product includes
-cryptographic software written by Eric Young ([eay@cryptsoft.com](mailto:eay@cryptsoft.com)), and UPnP software written by Thomas Bernard.
-
 UNIX BUILD NOTES
 ====================
 
@@ -22,10 +15,10 @@ Dependencies
  Library       |Purpose           |Description						    				
  --------------|------------------|---------------------------------------------------------
  libssl        |SSL Support       |Secure communications
- libdb4.8      |Berkeley DB       |Blockchain & wallet storage	
+ libdb         |Berkeley DB       |Blockchain & wallet storage	
  libboost      |Boost             |C++ Library
  miniupnpc     |UPnP Support      |Optional firewall-jumping support
- libsecp256k1EC|EC Operations	   |Optimized C library for EC operations on curve secp256k1.
+ libsecp256k1EC|EC Operations	  |Optimized C library for EC operations on curve secp256k1.
 
 [miniupnpc](http://miniupnp.free.fr/) may be used for UPnP port mapping.  It can be downloaded from [here](
 http://miniupnp.tuxfamily.org/files/).  UPnP support is compiled in and
@@ -48,106 +41,28 @@ Licenses of statically linked libraries:
  miniupnpc     |New (3-clause) BSD license
  libsecp256k1  |MIT License
 
-- Versions used in this release:
--  GCC           4.3.3
--  OpenSSL       1.0.1c
--  Berkeley DB   4.8.30.NC
--  Boost         1.37
--  miniupnpc     1.6
-
 Dependency Build Instructions: Ubuntu & Debian
 ----------------------------------------------
 Build requirements:
 
-    sudo apt-get install build-essential git autoconf libtool
-    sudo apt-get install libssl-dev
-
-for Ubuntu 12.04:
-
-    sudo apt-get install libboost-all-dev
-
- db4.8 packages are available [here](https://launchpad.net/~bitcoin/+archive/bitcoin).
-
- Ubuntu precise has packages for libdb5.1-dev and libdb5.1++-dev,
- but using these will break binary wallet compatibility, and is not recommended.
-
-for other Ubuntu & Debian:
-
-    sudo apt-get install libdb4.8-dev
-    sudo apt-get install libdb4.8++-dev
-    sudo apt-get install libboost1.37-dev
- (If using Boost 1.37, append -mt to the boost libraries in the makefile)
+    sudo apt-get install build-essential git autoconf libtool libssl-dev libboost-all-dev libdb++-dev libgmp-dev
 
 libsecp256k1:
 
-    sudo apt-get install libgmp-dev
     cd src/secp256k1
     ./autogen.sh
     ./configure
     make
-    make install
+    sudo make install
 
 Optional:
 
     sudo apt-get install libminiupnpc-dev (see USE_UPNP compile flag)
 
-
-Dependency Build Instructions: FreeBSD 8.x/9.x
-----------------------------------------------
-Build and install dependencies manually via ports:
-
-    cd /usr/ports/net/miniupnpc && make install clean
-    cd /usr/ports/devel/gmake && make install clean
-    cd /usr/ports/databases/db48 && make install clean
-    cd /usr/ports/devel/boost-libs && make install clean
-
-Or using portmaster:
-
-    portmaster -d net/miniupnpc devel/gmake databases/db48 devel/boost-libs
-
-
-Enable miniupnpc system startup by modifying /etc/rc.conf and adding the following:
-
-    miniupnpc_enable="YES"
-
-
-To compile Vertcoin with GNU make:
-
-    cd src/
-    gmake -f makefile.fbsd
-
-
 Notes
 -----
 The release is built with GCC and then "strip vertcoind" to strip the debug
 symbols, which reduces the executable size by about 90%.
-
-
-miniupnpc
----------
-    tar -xzvf miniupnpc-1.6.tar.gz
-    cd miniupnpc-1.6
-    make
-    sudo su
-    make install
-
-
-Berkeley DB
------------
-You need Berkeley DB 4.8.  If you have to build Berkeley DB yourself:
-
-    ../dist/configure --enable-cxx
-    make
-
-
-Boost
------
-If you need to build Boost yourself:
-
-    sudo su
-    ./bootstrap.sh
-    ./bjam install
-
 
 Security
 --------
