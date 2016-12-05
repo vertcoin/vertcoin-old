@@ -1174,6 +1174,11 @@ static const char *strMainNetDNSSeed[][2] = {
 	{"useast1.vtconline.org","useast1.vtconline.org"},
 	{"fr1.vtconline.org", "fr1.vtconline.org"},
 	{"uk1.vtconline.org","uk1.vtconline.org"},
+        {"vtc.alwayshashing.com", "vtc.alwayshashing.com"},
+	{"explorer.vertcoin.info", "explorer.vertcoin.info"},
+	{"p2pool.kosmoplovci.org", "p2pool.kosmoplovci.org"},
+	{"crypto.office-on-the.net", "crypto.office-on-the.net"},
+	{"mail.hoosieryouth.org", "mail.hoosieryouth.org"},
     {NULL, NULL}
 };
 
