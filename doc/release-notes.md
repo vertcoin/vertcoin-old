@@ -1,3 +1,7 @@
+0.10.0.2 changes
+=============
+- Added new Lyra2REv2 testnet
+
 0.8.7.2 changes
 =============
 - Added support for Stealth (SX) Addresses
