@@ -1050,10 +1050,6 @@ bool GetTransaction(const uint256 &hash, CTransaction &txOut, uint256 &hashBlock
 }
 
 
-
-
-
-
 //////////////////////////////////////////////////////////////////////////////
 //
 // CBlock and CBlockIndex
@@ -1138,7 +1134,6 @@ int64 static GetBlockValue(int nHeight, int64 nFees)
 }
 
 
-
 static const int64 nTargetTimespan = 3.5 * 24 * 60 * 60; // Vertcoin: 3.5 days
 static const int64 nTargetSpacing = 2.5 * 60; // Vertcoin: 2.5 minutes
 static const int64 nInterval = nTargetTimespan / nTargetSpacing;
@@ -1168,7 +1163,6 @@ unsigned int ComputeMinWork(unsigned int nBase, int64 nTime)
         bnResult = bnProofOfWorkLimit;
     return bnResult.GetCompact();
 }
-
 
 
 // legacy diff-mode
@@ -1240,8 +1234,6 @@ unsigned int static GetNextWorkRequired_V1(const CBlockIndex* pindexLast, const 
 
     return bnNew.GetCompact();
 }
-
-
 
 
 unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const CBlockHeader *pblock, uint64 TargetBlocksSpacingSeconds, uint64 PastBlocksMin, uint64 PastBlocksMax) {
@@ -1343,7 +1335,6 @@ unsigned int static GetNextWorkRequired_V2(const CBlockIndex* pindexLast, const 
             return KimotoGravityWell(pindexLast, pblock, BlocksTargetSpacing, PastBlocksMin, PastBlocksMax);
         }
 }
-
 
 
 unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock)
@@ -1489,15 +1480,6 @@ void CBlockHeader::UpdateTime(const CBlockIndex* pindexPrev)
     if (fTestNet)
         nBits = GetNextWorkRequired(pindexPrev, this);
 }
-
-
-
-
-
-
-
-
-
 
 
 const CTxOut &CTransaction::GetOutputFor(const CTxIn& input, CCoinsViewCache& view)
@@ -3083,9 +3065,8 @@ bool InitBlockIndex() {
 
         if (fTestNet)
         {
-
-            block.nNonce = 11521194;
-            block.nTime = 1389306217;
+            block.nNonce = 0;
+            block.nTime = 1481291250;
         }
 
         //// debug print
@@ -3094,7 +3075,35 @@ bool InitBlockIndex() {
         printf("%s\n", hashGenesisBlock.ToString().c_str());
         printf("%s\n", block.hashMerkleRoot.ToString().c_str());
         assert(block.hashMerkleRoot == uint256("0x4af38ca0e323c0a5226208a73b7589a52c030f234810cf51e13e3249fc0123e7"));
+	    
+        if (true && block.GetHash() != hashGenesisBlock)
+        {
+            printf("Searching for genesis block...\n");
+            // This will figure out a valid hash and Nonce if you're
+            // creating a different genesis block:
+            uint256 hashTarget = CBigNum().SetCompact(block.nBits).getuint256();
+            uint256 thash;
 
+            loop
+            {
+                lyra2re2_hash(BEGIN(block.nVersion), BEGIN(thash));
+                if (thash <= hashTarget)
+                    break;
+                if ((block.nNonce & 0xFFF) == 0)
+                {
+                    printf("nonce %08X: hash = %s (target = %s)\n", block.nNonce, thash.ToString().c_str(), hashTarget.ToString().c_str());
+                }
+                ++block.nNonce;
+                if (block.nNonce == 0)
+                {
+                    printf("NONCE WRAPPED, incrementing time\n");
+                    ++block.nTime;
+                }
+            }
+            printf("block.nTime = %u \n", block.nTime);
+            printf("block.nNonce = %u \n", block.nNonce);
+            printf("block.GetHash = %s\n", block.GetHash().ToString().c_str());
+        }
 
         block.print();
         assert(hash == hashGenesisBlock);
@@ -4938,7 +4947,7 @@ void static VertcoinMiner(CWallet *pwallet)
 
             loop
             {
-                if((fTestNet && pindexPrev->nHeight+1 >= 127000) || pindexPrev->nHeight+1 >= 347000)
+                if((fTestNet && pindexPrev->nHeight+1 >= 0) || pindexPrev->nHeight+1 >= 347000) // New Lyra2re2 tesnet
                 {
                     lyra2re2_hash(BEGIN(pblock->nVersion), BEGIN(thash));
                 }
