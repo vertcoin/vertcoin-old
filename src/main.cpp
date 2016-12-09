@@ -3001,14 +3001,14 @@ bool LoadBlockIndex()
 {
     if (fTestNet)
     {
-        /*2014-01-08 17:06:16 block.nTime = 1389171600
-        2014-01-08 17:06:16 block.nNonce = 5706611
-        2014-01-08 17:06:16 block.GetHash = 03d493b7a75087b9d06a65ce0c0d8b24ca87333e0360a728d023eb0c8cf48e36
-        2014-01-08 17:06:16 CBlock(hash=03d493b7a75087b9d06a65ce0c0d8b24ca87333e0360a728d023eb0c8cf48e36, input=010000000000000000000000000000000000000000000000000000000000000000000000a25975432fe0326f68d92f3f576e016871195ef828f3b23e5a7faeb672fc73b29013cd52f0ff0f1e73135700, PoW=0000062027f1f5725d81942ddbd14e5664422eb2be006410aee59cfc0efa55d2, ver=1, hashPrevBlock=0000000000000000000000000000000000000000000000000000000000000000, hashMerkleRoot=b273fc72b6ae7f5a3eb2f328f85e197168016e573f2fd9686f32e02f437559a2, nTime=1389171600, nBits=1e0ffff0, nNonce=5706611, vtx=1)
-        2014-01-08 17:06:16   CTransaction(hash=b273fc72b6ae7f5a3eb2f328f85e197168016e573f2fd9686f32e02f437559a2, ver=1, vin.size=1, vout.size=1, nLockTime=0)
-            CTxIn(COutPoint(0000000000000000000000000000000000000000000000000000000000000000, 4294967295), coinbase 0002e7034830312f30382f3138333520e280932054484520554e4954454420535441544553204e4154494f4e414c2044454254204953205a45524f20464f5220544845204f4e4c592054494d45)
-            CTxOut(error)
-        vMerkleTree: b273fc72b6ae7f5a3eb2f328f85e197168016e573f2fd9686f32e02f437559a2*/
+        /*2016-12-09 14:01:03 block.nTime = 1481291250
+	2016-12-09 14:01:03 block.nNonce = 915027
+	2016-12-09 14:01:03 block.GetHash = cee8f24feb7a64c8f07916976aa4855decac79b6741a8ec2e32e2747497ad2c9
+	2016-12-09 14:01:03 CBlock(hash=cee8f24feb7a64c8f07916976aa4855decac79b6741a8ec2e32e2747497ad2c9, input=010000000000$
+	2016-12-09 14:01:03   CTransaction(hash=4af38ca0e323c0a5226208a73b7589a52c030f234810cf51e13e3249fc0123e7, ver=1, vin$
+    	CTxIn(COutPoint(0000000000000000000000000000000000000000000000000000000000000000, 4294967295), coinbase 0002e703$
+    	CTxOut(nValue=50.00000000, scriptPubKey=)
+  	vMerkleTree: 4af38ca0e323c0a5226208a73b7589a52c030f234810cf51e13e3249fc0123e7*/
 
         /*pchMessageStart[0] = 0xfc;
         pchMessageStart[1] = 0xc1;
@@ -3018,8 +3018,7 @@ bool LoadBlockIndex()
         pchMessageStart[1] = 'e';
         pchMessageStart[2] = 'r';
         pchMessageStart[3] = 't';
-        hashGenesisBlock = uint256("0xbd270cb82121e85f4eba6d0c2ffdc9eb74674eb9bafed9bbaa0fe8f47d971aae");
-        //hashGenesisBlock = uint256("0xf5ae71e26c74beacc88382716aced69cddf3dffff24f384e1808905e0188f68f");
+        hashGenesisBlock = uint256("0xcee8f24feb7a64c8f07916976aa4855decac79b6741a8ec2e32e2747497ad2c9");
     }
 
     //
@@ -3065,7 +3064,7 @@ bool InitBlockIndex() {
 
         if (fTestNet)
         {
-            block.nNonce = 0;
+            block.nNonce = 915027;
             block.nTime = 1481291250;
         }
 
@@ -3075,35 +3074,6 @@ bool InitBlockIndex() {
         printf("%s\n", hashGenesisBlock.ToString().c_str());
         printf("%s\n", block.hashMerkleRoot.ToString().c_str());
         assert(block.hashMerkleRoot == uint256("0x4af38ca0e323c0a5226208a73b7589a52c030f234810cf51e13e3249fc0123e7"));
-	    
-        if (true && block.GetHash() != hashGenesisBlock)
-        {
-            printf("Searching for genesis block...\n");
-            // This will figure out a valid hash and Nonce if you're
-            // creating a different genesis block:
-            uint256 hashTarget = CBigNum().SetCompact(block.nBits).getuint256();
-            uint256 thash;
-
-            loop
-            {
-                lyra2re2_hash(BEGIN(block.nVersion), BEGIN(thash));
-                if (thash <= hashTarget)
-                    break;
-                if ((block.nNonce & 0xFFF) == 0)
-                {
-                    printf("nonce %08X: hash = %s (target = %s)\n", block.nNonce, thash.ToString().c_str(), hashTarget.ToString().c_str());
-                }
-                ++block.nNonce;
-                if (block.nNonce == 0)
-                {
-                    printf("NONCE WRAPPED, incrementing time\n");
-                    ++block.nTime;
-                }
-            }
-            printf("block.nTime = %u \n", block.nTime);
-            printf("block.nNonce = %u \n", block.nNonce);
-            printf("block.GetHash = %s\n", block.GetHash().ToString().c_str());
-        }
 
         block.print();
         assert(hash == hashGenesisBlock);
