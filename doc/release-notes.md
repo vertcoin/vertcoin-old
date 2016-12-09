@@ -1,6 +1,49 @@
 0.10.0.2 changes
 =============
 - Added new Lyra2REv2 testnet
+- Update nodes list
+- Update block explorer URL
+- Fix build warnings
+- Added a checkpoint
+
+0.10.0.1 changes
+=============
+- Update node lists and checkpoints
+
+0.10.0.0 changes
+=============
+- Fork to Lyra2REv2 at block 347000 (mainnet) and 127000 (testnet)
+- Fix solomining to the wallet using getwork
+- Fix a transaction fee bug
+
+0.9.0.2 changes
+=============
+- Fix segmentation fault on -reindex flag
+- Fix segmentation fault on -disablewallet=1 flag
+- Fix all current build warnings
+- Update "make clean" to remove Lyra2RE files
+- Update block explorer links
+- Update seed nodes
+- New checkpoint
+- Add support for "watch only" addresses
+- Removed some debugging output that is not relevant after the successful fork
+- Update for OpenSSL 1.0.1k
+
+0.9.0.1 changes
+=============
+- Fixes testnet
+
+0.9.0.0 changes
+=============
+- Fork to Lyra2RE
+
+0.8.7.3 changes
+=============
+- Supporting Stealth Address Transactions
+- Supporting OP_RETURN
+- Adding GUI for Stealth Address
+- Fixed wrong description
+- Fixed transaction fees
 
 0.8.7.2 changes
 =============
