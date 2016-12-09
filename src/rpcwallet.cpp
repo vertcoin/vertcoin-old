@@ -1748,7 +1748,7 @@ Value resetprikeystatus(const Array& params, bool fHelp)
     list<CStealthAddressWifEntry> listImportSxWif;
     CWalletDB(pwalletMain->strWalletFile).ListImportedSxWif(listImportSxWif, true);
 
-    printf("\n size of listImportSxWif = %d \n", listImportSxWif.size());
+    printf("\n size of listImportSxWif = %d \n", static_cast<int>(listImportSxWif.size()));
 
     BOOST_FOREACH(const CStealthAddressWifEntry& item, listImportSxWif)
     {
