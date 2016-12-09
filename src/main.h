@@ -1380,11 +1380,11 @@ public:
     uint256 GetPoWHash(int height) const
     {
         uint256 thash;
-        if((fTestNet && height >= 127000) || height >= 347000)
+        if((fTestNet && height >= 0) || height >= 347000) // New Lyra2re2 Testnet
         {
         	lyra2re2_hash(BEGIN(nVersion), BEGIN(thash));
         }
-        else if((fTestNet && height >= 100) || height >= 208301)
+        else if(height >= 208301)
         {
             lyra2re_hash(BEGIN(nVersion), BEGIN(thash));
         }

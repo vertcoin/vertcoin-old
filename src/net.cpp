@@ -1178,8 +1178,7 @@ static const char *strMainNetDNSSeed[][2] = {
 };
 
 static const char *strTestNetDNSSeed[][2] = {
-    {"test.vtc.sovereignshare.com", "test.vtc.sovereignshare.com"},
-    {"wil-vtc01.greenpool.org.uk","wil-vtc01.greenpool.org.uk"},
+//add nodes once new network is live
     {NULL, NULL}
 };
 
