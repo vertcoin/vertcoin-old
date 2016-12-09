@@ -1183,6 +1183,7 @@ static const char *strMainNetDNSSeed[][2] = {
 };
 
 static const char *strTestNetDNSSeed[][2] = {
+    //add nodes once new network is live
     {NULL, NULL}
 };
 
