@@ -25,7 +25,7 @@ Then execute the following:
 
 ::
 
-    qmake
+    qmake vertcoin-qt.pro
     make
 
 Alternatively, install `Qt Creator`_ and open the `vertcoin-qt.pro` file.
