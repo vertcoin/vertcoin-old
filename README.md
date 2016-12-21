@@ -3,9 +3,9 @@ Vertcoin integration/staging tree
 
 http://www.vertcoin.org
 
-Copyright (c) 2009-2013 Bitcoin Developers
-Copyright (c) 2011-2013 Litecoin Developers
-Copyright (c) 2014-2015 Vertcoin Developers
+Copyright 2009-2013 Bitcoin Developers
+Copyright 2011-2013 Litecoin Developers
+Copyright 2014-2016 Vertcoin Developers
 
 What is Vertcoin?
 ----------------

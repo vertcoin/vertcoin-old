@@ -1,44 +1,31 @@
 Vertcoin-Qt: Qt4 GUI for Vertcoin
-===============================
+=================================
 
 Build instructions
 ===================
 
-Debian
+Ubuntu/Debian
 -------
 
-First, make sure that the required packages for Qt4 development of your
+First, build the command line wallet. This will help you install all of the
+required dependencies before attempting to build the GUI wallet.
+
+Second, make sure that the required packages for Qt4 development of your
 distribution are installed, these are
 
 ::
 
-for Debian and Ubuntu  <= 11.10 :
+for Ubuntu >= 14.04 (please read the 'Berkely DB version warning' below):
 
 ::
 
-    apt-get install qt4-qmake libqt4-dev build-essential libboost-dev libboost-system-dev \
-        libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev \
-        libssl-dev libdb4.8++-dev libminiupnpc-dev
+    sudo apt-get install qt4-qmake libqt4-dev libqrencode-dev
 
-for Ubuntu >= 12.04 (please read the 'Berkely DB version warning' below):
+Then execute the following:
 
 ::
 
-    apt-get install qt4-qmake libqt4-dev build-essential libboost-dev libboost-system-dev \
-        libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev \
-        libssl-dev libdb++-dev libminiupnpc-dev
-
-For Qt 5 you need the following, otherwise you get an error with lrelease when running qmake:
-
-::
-
-    apt-get install qt5-qmake libqt5gui5 libqt5core5 libqt5dbus5 qttools5-dev-tools
-
-then execute the following:
-
-::
-
-    qmake
+    qmake vertcoin-qt.pro
     make
 
 Alternatively, install `Qt Creator`_ and open the `vertcoin-qt.pro` file.
@@ -135,9 +122,8 @@ Berkely DB version warning
 
 A warning for people using the *static binary* version of Vertcoin on a Linux/UNIX-ish system (tl;dr: **Berkely DB databases are not forward compatible**).
 
-The static binary version of Vertcoin is linked against libdb4.8 (see also `this Debian issue`_).
-
-Now the nasty thing is that databases from 5.X are not compatible with 4.X.
+The current static binary version of Vertcoin is linked against libdb5.2 (see also `this Debian issue`_). Previous versions were compiled
+with libdb4.8 but the nasty thing is that databases from 5.X are not compatible with 4.X.
 
 If the globally installed development package of Berkely DB installed on your system is 5.X, any source you
 build yourself will be linked against that. The first time you run with a 5.X version the database will be upgraded,
@@ -146,18 +132,3 @@ significant hassle!
 
 .. _`this Debian issue`: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=621425
 
-Ubuntu 11.10 warning
-====================
-
-Ubuntu 11.10 has a package called 'qt-at-spi' installed by default.  At the time of writing, having that package
-installed causes vertcoin-qt to crash intermittently.  The issue has been reported as `launchpad bug 857790`_, but
-isn't yet fixed.
-
-Until the bug is fixed, you can remove the qt-at-spi package to work around the problem, though this will presumably
-disable screen reader functionality for Qt apps:
-
-::
-
-    sudo apt-get remove qt-at-spi
-
-.. _`launchpad bug 857790`: https://bugs.launchpad.net/ubuntu/+source/qt-at-spi/+bug/857790
