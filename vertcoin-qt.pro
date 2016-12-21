@@ -20,23 +20,6 @@ CONFIG += static
 #    SECP_INCLUDE_PATH, SECP_LIB_PATH, GMP_INCLUDE_PATH, GMP_LIB_PATH, 
 #    BOOST_INCLUDE_PATH, BOOST_LIB_PATH, BDB_INCLUDE_PATH,
 #    BDB_LIB_PATH, OPENSSL_INCLUDE_PATH and OPENSSL_LIB_PATH respectively
-win32 {
-	SECP_INCLUDE_PATH=c:/deps/secp256k1
-	SECP_LIB_PATH=c:/deps/secp256k1/.libs
-	GMP_INCLUDE_PATH=c:/deps/gmp-6.0.0
-	GMP_LIB_PATH=c:/deps/gmp-6.0.0/.libs
-	BOOST_LIB_SUFFIX=-mgw49-mt-s-1_52
-	BOOST_INCLUDE_PATH=C:/deps/boost_1_52_0
-	BOOST_LIB_PATH=C:/deps/boost_1_52_0/stage/lib
-	BDB_INCLUDE_PATH=C:/deps/db-4.8.30.NC/build_unix
-	BDB_LIB_PATH=C:/deps/db-4.8.30.NC/build_unix
-	OPENSSL_INCLUDE_PATH=C:/deps/openssl-1.0.1j/include
-	OPENSSL_LIB_PATH=C:/deps/openssl-1.0.1j
-	MINIUPNPC_INCLUDE_PATH=C:/deps/
-	MINIUPNPC_LIB_PATH=C:/deps/miniupnpc
-	QRENCODE_INCLUDE_PATH=C:/deps/qrencode-3.4.4
-	QRENCODE_LIB_PATH=C:/deps/qrencode-3.4.4/.libs
-}
 
 OBJECTS_DIR = build
 MOC_DIR = build
@@ -64,7 +47,7 @@ contains(RELEASE, 1) {
 }
 
 # for extra security (see: https://wiki.debian.org/Hardening): this flag is GCC compiler-specific
-QMAKE_CXXFLAGS += -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -std=c++0x
+QMAKE_CXXFLAGS += -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -std=c++14
 #QMAKE_CXXFLAGS += -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2
 # for extra security on Windows: enable ASLR and DEP via GCC linker flags
 win32:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat
@@ -487,7 +470,7 @@ macx:LIBS += -lboost_chrono$$BOOST_LIB_SUFFIX
 contains(RELEASE, 1) {
     !win32:!macx {
         # Linux: turn dynamic linking back on for c/c++ runtime libraries
-        LIBS += -Wl,-Bdynamic
+        LIBS += -Wl,-Bdynamic -ldl
     }
 }
 
