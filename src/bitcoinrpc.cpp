@@ -237,7 +237,7 @@ static const CRPCCommand vRPCCommands[] =
     { "getbalance",             &getbalance,             false,     false,      true },
     { "move",                   &movecmd,                false,     false,      true },
     { "sendfrom",               &sendfrom,               false,     false,      true },
-    { "sendstealthfrom",        &sendstealthfrom,        false,     false,      true },
+    //{ "sendstealthfrom",        &sendstealthfrom,        false,     false,      true },
     { "sendmany",               &sendmany,               false,     false,      true },
     { "addmultisigaddress",     &addmultisigaddress,     false,     false,      true },
     { "createmultisig",         &createmultisig,         true,      true ,      false },
