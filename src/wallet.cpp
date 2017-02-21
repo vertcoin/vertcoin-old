@@ -1405,7 +1405,8 @@ bool CWallet::CreateTransaction(const vector<pair<pair<pair<CScript, int64>, ec_
                 dPriority /= nBytes;
 
                 // Check that enough fee is included
-                bool fAllowFree = CTransaction::AllowFree(dPriority);
+                //bool fAllowFree = CTransaction::AllowFree(dPriority);
+                bool fAllowFree = false;
                 int64 nMinFee = wtxNew.GetMinFee(1, fAllowFree, GMF_SEND);
 
                 if (nFeeRet < nMinFee)
